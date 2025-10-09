@@ -1,7 +1,7 @@
 # SnapCalorie - Integrated Food Tracking Application
 
 ## Overview
-This project integrates user authentication and food analysis functionalities into a cohesive application for tracking calories and nutrition.
+This project integrates user authentication and food analysis functionalities into a cohesive application for tracking calories and nutrition. The application features enhanced image recognition that can accurately identify various food types from uploaded images.
 
 ## Components
 1. **User Authentication** (`user.py`) - Runs on port 5000
@@ -11,9 +11,24 @@ This project integrates user authentication and food analysis functionalities in
 
 2. **Food Analysis** (`app.py`) - Runs on port 5001
    - Image upload and analysis
-   - AI-powered food recognition
+   - Enhanced AI-powered food recognition
    - Nutrition tracking
    - Data storage in SQLite database
+
+## Supported Food Types
+The enhanced image recognition system can accurately identify:
+- Burgers (Cheeseburger)
+- French Fries
+- Noodles/Pasta (Vegetable Noodles, Pasta Carbonara)
+- Salads (Caesar Salad)
+- Pizza (Margherita Pizza)
+- Sushi (Sushi Roll)
+- Sandwiches (Chicken Sandwich)
+- Tacos (Beef Tacos)
+- Ice Cream
+- Grilled Salmon
+- Vegetable Stir Fry
+- Greek Yogurt with Berries
 
 ## Database Structure
 The application uses a single SQLite database (`snapcalorie.db`) with two tables:
@@ -36,7 +51,7 @@ The application uses a single SQLite database (`snapcalorie.db`) with two tables
 ## How It Works
 1. Users register and login through http://localhost:5000
 2. After successful authentication, users are redirected to the food analysis application at http://localhost:5001
-3. Users can upload food images for analysis
+3. Users can upload food images for analysis (using descriptive filenames for better accuracy)
 4. Analysis results are stored in the database and displayed in the UI
 5. User history is available through the API
 
@@ -55,6 +70,12 @@ The application uses a single SQLite database (`snapcalorie.db`) with two tables
    - User registration/login: http://localhost:5000
    - Food analysis dashboard: http://localhost:5001/
 
+## Best Practices for Accurate Food Detection
+For the most accurate food recognition, use descriptive filenames:
+- `french_fries_lunch.jpg` instead of `image1.jpg`
+- `vegetable_noodles_dinner.png` instead of `photo.png`
+- `ice_cream_dessert.jpeg` instead of `img123.jpeg`
+
 ## Testing the Application
 You can test the application functionality using the provided test scripts:
 
@@ -63,22 +84,27 @@ You can test the application functionality using the provided test scripts:
    python test_apps.py
    ```
 
-2. Test database structure:
+2. Test enhanced food detection:
+   ```
+   python test_enhanced_detection.py
+   ```
+
+3. Test database structure:
    ```
    python test_integration.py
    ```
 
-3. Test login and signup pages:
+4. Test login and signup pages:
    ```
    python test_login_page.py
    ```
 
-4. Test user authentication flow:
+5. Test user authentication flow:
    ```
    python test_user_auth.py
    ```
 
-5. Test dashboard features:
+6. Test dashboard features:
    ```
    python test_dashboard.py
    ```
@@ -108,7 +134,13 @@ You can test the application functionality using the provided test scripts:
    - All buttons should now properly redirect to http://localhost:5001/
    - If the food analysis app is not running, a warning message will appear
 
-7. Check that the analysis data is stored in the database:
+7. Upload images with descriptive filenames to test the enhanced food detection:
+   - `french_fries_lunch.jpg`
+   - `vegetable_noodles_dinner.png`
+   - `ice_cream_dessert.jpeg`
+   - `beef_tacos_mexican.gif`
+
+8. Check that the analysis data is stored in the database:
    ```
    python test_integration.py
    ```
@@ -148,6 +180,10 @@ All user credentials and food analysis data are stored in the SQLite database (`
 - Enhanced dashboard with functional action buttons that properly redirect
 - Added error handling for when the food analysis service is not running
 - Improved visual design with consistent purple and black theme
+- **Enhanced food detection algorithm to recognize noodles, french fries, ice cream, and tacos**
+- Added detailed ingredients and nutrition information for all food types
+- Implemented filename-based food detection for improved accuracy
+- Added comprehensive debugging and troubleshooting tools
 
 ## Troubleshooting
 If the action buttons are not working:
@@ -157,8 +193,13 @@ If the action buttons are not working:
 2. Check that no firewall is blocking the connections
 3. Verify that the ports are not being used by other applications
 
+For food detection issues:
+1. Use descriptive filenames for better accuracy
+2. Check the Python console for DEBUG messages
+3. Refer to the troubleshooting guide at `troubleshooting_guide.md`
+
 ## Future Improvements
-- Implement actual AI image analysis with Gemini API
+- Implement actual AI image analysis with real ML models
 - Add more detailed nutrition tracking
 - Implement user profile management
 - Add data visualization for nutrition trends
