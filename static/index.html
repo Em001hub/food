@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapCal - AI Calorie Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍎 SnapCal</h1>
+            <p class="tagline">AI-Powered Calorie & Fitness Tracker</p>
+        </header>
+
+        <section class="user-profile">
+            <h2>Your Profile</h2>
+            <div class="profile-inputs">
+                <div class="input-group">
+                    <label for="gender">Gender:</label>
+                    <select id="gender">
+                        <option value="">Select...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" placeholder="Enter age" min="1" max="120">
+                </div>
+                <div class="input-group">
+                    <label for="goal">Fitness Goal:</label>
+                    <input type="text" id="goal" placeholder="e.g., knee pain relief, weight loss">
+                </div>
+                <button id="saveProfile" class="btn-primary">Save Profile</button>
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <h2>Upload Food Image</h2>
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="imageInput" accept="image/*" hidden>
+                <div class="upload-placeholder">
+                    <span class="upload-icon">📸</span>
+                    <p>Click or drag image here</p>
+                    <p class="upload-hint">Supports: JPG, PNG, GIF</p>
+                </div>
+                <img id="previewImage" class="preview-image" style="display: none;">
+            </div>
+            <button id="analyzeBtn" class="btn-primary" style="display: none;">Analyze Food</button>
+        </section>
+
+        <section class="calorie-tracker">
+            <h2>Daily Calorie Tracker</h2>
+            <div class="calorie-stats">
+                <div class="stat-card">
+                    <h3 id="caloriesConsumed">0</h3>
+                    <p>Calories Consumed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="caloriesRemaining">2000</h3>
+                    <p>Calories Remaining</p>
+                </div>
+            </div>
+            <div id="mealsList" class="meals-list"></div>
+        </section>
+
+        <section class="water-tracker">
+            <h2>💧 Water Intake Tracker</h2>
+            <div class="water-display">
+                <div class="water-counter">
+                    <span id="waterGlasses">0</span> / 8 glasses
+                    <span class="water-ml">(<span id="waterMl">0</span> ml)</span>
+                </div>
+                <div class="water-visual" id="waterVisual">
+                    <!-- Water glasses will be added dynamically -->
+                </div>
+            </div>
+            <div class="water-controls">
+                <button id="addWaterBtn" class="btn-primary">Add 1 Glass</button>
+                <button id="resetWaterBtn" class="btn-secondary">Reset</button>
+            </div>
+            <div id="waterReminder" class="reminder-message" style="display: none;">
+                ⏰ Time to drink water! Stay hydrated!
+            </div>
+        </section>
+
+        <section id="analysisResults" class="analysis-results" style="display: none;">
+            <h2>Analysis Results</h2>
+            <div id="foodInfo" class="food-info"></div>
+        </section>
+
+        <section id="recipesSection" class="recipes-section" style="display: none;">
+            <h2>🍽️ Healthy Recipe Suggestions</h2>
+            <div id="recipesList" class="recipes-list"></div>
+        </section>
+
+        <section id="workoutSection" class="workout-section" style="display: none;">
+            <h2>💪 Personalized Workout Plan</h2>
+            <div id="workoutPlan" class="workout-plan"></div>
+        </section>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Analyzing...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
