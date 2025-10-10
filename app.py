@@ -9,7 +9,7 @@ import base64
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.secret_key = 'snapcalorie_secret_key_2024'
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=['http://localhost:5000', 'http://127.0.0.1:5000'])
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -132,6 +132,7 @@ def analyze_image():
         
         if file and file.filename and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            print(f"DEBUG: Original filename: '{file.filename}'")
             print(f"DEBUG: Secure filename: '{filename}'")
             
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -146,13 +147,22 @@ def analyze_image():
             filename_lower = filename.lower()
             print(f"DEBUG: Processing filename: '{filename_lower}'")
             
-            # Try to guess food type from filename
-            if 'burger' in filename_lower or 'cheese' in filename_lower:
+            # Try to guess food type from filename - IMPROVED LOGIC
+            print(f"DEBUG: Checking for burger: {'burger' in filename_lower}")
+            print(f"DEBUG: Checking for fries: {'fries' in filename_lower}")
+            print(f"DEBUG: Checking for french: {'french' in filename_lower}")
+            print(f"DEBUG: Checking for pizza: {'pizza' in filename_lower}")
+            print(f"DEBUG: Checking for sushi: {'sushi' in filename_lower}")
+            print(f"DEBUG: Checking for sandwich: {'sandwich' in filename_lower}")
+            
+            if 'burger' in filename_lower:
                 food_name = 'Cheeseburger'
                 calories = random.randint(500, 800)
-            elif 'fries' in filename_lower or 'french' in filename_lower and 'fry' in filename_lower:
+                print(f"DEBUG: Matched burger -> {food_name}")
+            elif 'fries' in filename_lower or 'french' in filename_lower:
                 food_name = 'French Fries'
                 calories = random.randint(300, 600)
+                print(f"DEBUG: Matched fries -> {food_name}")
             elif 'noodle' in filename_lower or 'pasta' in filename_lower:
                 if 'carbonara' in filename_lower:
                     food_name = 'Pasta Carbonara'
@@ -160,24 +170,31 @@ def analyze_image():
                 else:
                     food_name = 'Vegetable Noodles'
                     calories = random.randint(400, 700)
-            elif 'salad' in filename_lower or 'lettuce' in filename_lower:
+                print(f"DEBUG: Matched noodles -> {food_name}")
+            elif 'salad' in filename_lower:
                 food_name = 'Caesar Salad'
                 calories = random.randint(200, 400)
-            elif 'pizza' in filename_lower or 'cheese' in filename_lower:
+                print(f"DEBUG: Matched salad -> {food_name}")
+            elif 'pizza' in filename_lower:
                 food_name = 'Margherita Pizza'
                 calories = random.randint(600, 900)
-            elif 'sushi' in filename_lower or 'roll' in filename_lower or 'rice' in filename_lower:
+                print(f"DEBUG: Matched pizza -> {food_name}")
+            elif 'sushi' in filename_lower or 'roll' in filename_lower:
                 food_name = 'Sushi Roll'
                 calories = random.randint(300, 600)
-            elif 'chicken' in filename_lower or 'sandwich' in filename_lower:
+                print(f"DEBUG: Matched sushi -> {food_name}")
+            elif 'sandwich' in filename_lower:
                 food_name = 'Chicken Sandwich'
                 calories = random.randint(400, 700)
+                print(f"DEBUG: Matched sandwich -> {food_name}")
             elif 'taco' in filename_lower:
                 food_name = 'Beef Tacos'
                 calories = random.randint(400, 700)
+                print(f"DEBUG: Matched taco -> {food_name}")
             elif 'ice' in filename_lower and 'cream' in filename_lower:
                 food_name = 'Ice Cream'
                 calories = random.randint(200, 400)
+                print(f"DEBUG: Matched ice cream -> {food_name}")
             else:
                 # If we can't determine from filename, use a more realistic distribution
                 food_options = [
@@ -198,6 +215,7 @@ def analyze_image():
                 food_name, base_calories = random.choice(food_options)
                 # Add some variation to calories
                 calories = base_calories + random.randint(-50, 50)
+                print(f"DEBUG: No match, random selection -> {food_name}")
             
             print(f"DEBUG: Detected food: {food_name} with {calories} calories")
             

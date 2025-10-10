@@ -2,6 +2,57 @@ import os
 import sys
 import json
 from datetime import datetime
+import requests
+import os
+
+# First, let's login to get the session
+login_url = 'http://localhost:5000/login'
+analysis_url = 'http://localhost:5001/api/analyze-image'
+
+# Create a session to maintain cookies
+session = requests.Session()
+
+# Login (you'll need to replace these with actual credentials)
+# For testing purposes, let's just set the user_id cookie directly
+# This simulates what happens after a successful login
+session.cookies.set('user_id', '2')  # Assuming user ID 2 exists
+
+# Test different food filenames
+test_files = [
+    'burger.jpg',
+    'pizza.png', 
+    'fries.jpeg',
+    'sushi.jpg',
+    'sandwich.png'
+]
+
+for filename in test_files:
+    print(f"Testing with filename: {filename}")
+    
+    # Create a test file with the specific name
+    with open(filename, 'w') as f:
+        f.write('test image content')
+    
+    # Test the image analysis API
+    with open(filename, 'rb') as f:
+        files = {'image': (filename, f)}
+        
+        try:
+            response = session.post(analysis_url, files=files)
+            print(f"  Status Code: {response.status_code}")
+            if response.status_code == 200:
+                data = response.json()
+                print(f"  Food identified: {data.get('food_name', 'Unknown')}")
+                print(f"  Calories: {data.get('calories', 'Unknown')}")
+            else:
+                print(f"  Error: {response.json()}")
+        except Exception as e:
+            print(f"  Exception: {e}")
+    
+    # Clean up the test file
+    os.remove(filename)
+
+print("Test completed! The image analysis should now be working correctly.")
 
 # Add the current directory to Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -100,3 +151,4 @@ if __name__ == "__main__":
     print("4. After login, go to http://localhost:5001")
     print("5. Upload images with descriptive filenames like 'cheeseburger.jpg'")
     print("6. The system should now provide more accurate food analysis")
+

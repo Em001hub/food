@@ -75,7 +75,7 @@ analyzeBtn.addEventListener('click', async () => {
     showLoading();
 
     try {
-        const response = await fetch('/api/analyze-image', {
+        const response = await fetch('http://localhost:5001/api/analyze-image', {
             method: 'POST',
             body: formData
         });
@@ -128,7 +128,7 @@ function displayFoodInfo(data) {
 
 async function updateCalorieStats() {
     try {
-        const response = await fetch('/api/daily-stats');
+        const response = await fetch('http://localhost:5001/api/daily-stats');
         const data = await response.json();
         
         const consumed = data.calories || 0;
@@ -165,7 +165,7 @@ async function updateCalorieStats() {
 
 async function fetchUserHistory() {
     try {
-        const response = await fetch('/api/user-history');
+        const response = await fetch('http://localhost:5001/api/user-history');
         const data = await response.json();
         
         if (response.ok && data.history) {
@@ -201,7 +201,7 @@ async function getRecipes(foodName) {
     showLoading();
     
     try {
-        const response = await fetch('/api/get-recipes', {
+        const response = await fetch('http://localhost:5001/api/get-recipes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ food_name: foodName })
@@ -253,7 +253,7 @@ document.getElementById('saveProfile').addEventListener('click', async () => {
     showLoading();
     
     try {
-        const response = await fetch('/api/get-workout', {
+        const response = await fetch('http://localhost:5001/api/get-workout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userProfile)
@@ -317,7 +317,7 @@ function displayWorkoutPlan(data) {
 
 document.getElementById('addWaterBtn').addEventListener('click', async () => {
     try {
-        const response = await fetch('/api/water-intake', {
+        const response = await fetch('http://localhost:5001/api/water-intake', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'add' })
@@ -334,7 +334,7 @@ document.getElementById('addWaterBtn').addEventListener('click', async () => {
 
 document.getElementById('resetWaterBtn').addEventListener('click', async () => {
     try {
-        const response = await fetch('/api/water-intake', {
+        const response = await fetch('http://localhost:5001/api/water-intake', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'reset' })

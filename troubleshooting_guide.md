@@ -2,187 +2,95 @@
 
 ## Common Issues and Solutions
 
-### 1. Image Analysis Not Working
+### 1. Images Not Being Recognized Properly
 
-#### Symptoms:
-- Images upload but no analysis results appear
-- Error messages about authentication
-- No food detection or inaccurate food detection
+**Problem**: Food images are not being recognized correctly.
+**Solution**: Make sure your images have descriptive filenames that contain food keywords.
 
-#### Solutions:
+**Recommended filename patterns**:
+- `cheeseburger.jpg` or `burger.png`
+- `margherita_pizza.jpeg` or `pizza.png`
+- `french_fries.jpg` or `fries.png`
+- `sushi_roll.jpg` or `sushi.png`
+- `chicken_sandwich.jpeg` or `sandwich.png`
 
-**A. Check Server Status**
-1. Make sure both servers are running:
+### 2. "Analyze" Button Not Working
+
+**Problem**: Clicking the "Analyze Food" button does nothing or shows an error.
+**Solution**: Check the following:
+
+1. Make sure both applications are running:
+   - `python user.py` (runs on port 5000)
+   - `python app.py` (runs on port 5001)
+
+2. Make sure you're logged in:
+   - Visit `http://localhost:5000` first
+   - Log in with your credentials
+   - Then go to `http://localhost:5001`
+
+3. Check browser console for JavaScript errors (Press F12 in your browser)
+
+### 3. Authentication Issues
+
+**Problem**: "User not authenticated" error when analyzing images.
+**Solution**: 
+
+1. Make sure you log in through `http://localhost:5000` first
+2. After login, you should be able to access `http://localhost:5001`
+3. The authentication is shared between both apps using cookies
+
+### 4. Testing the System
+
+**To verify the system is working correctly**:
+
+1. Create test images with the recommended filenames:
+   ```bash
+   # Create empty test files (in Windows PowerShell)
+   New-Item -ItemType File -Path "uploads" -Name "cheeseburger.jpg"
+   New-Item -ItemType File -Path "uploads" -Name "margherita_pizza.png"
+   New-Item -ItemType File -Path "uploads" -Name "french_fries.jpeg"
+   New-Item -ItemType File -Path "uploads" -Name "sushi_roll.jpg"
+   New-Item -ItemType File -Path "uploads" -Name "chicken_sandwich.png"
    ```
-   python user.py    # Runs on port 5000 (authentication)
-   python app.py     # Runs on port 5001 (food analysis)
+
+2. Run the verification script:
+   ```bash
+   python verify_user_images.py
    ```
-2. Verify servers are accessible:
-   - http://localhost:5000/login (Authentication app)
-   - http://localhost:5001/ (Food analysis app)
 
-**B. Authentication Issues**
-1. Make sure you're logged in before uploading images
-2. Clear browser cookies and login again
-3. Check that both apps can share session data
+### 5. Checking Application Logs
 
-**C. File Upload Issues**
-1. Ensure images have proper extensions (.jpg, .png, .gif, .jpeg)
-2. Keep file sizes under 16MB
-3. Use descriptive filenames for better food detection:
-   - `cheeseburger.jpg` instead of `image1.jpg`
-   - `caesar_salad.png` instead of `photo.png`
+**To see detailed logs**:
 
-**D. Browser Console Debugging**
-1. Open Developer Tools (F12)
-2. Go to the Network tab
-3. Upload an image
-4. Look for the `/api/analyze-image` request
-5. Check the response for errors
+1. Look at the terminal output where you ran `python app.py`
+2. When you upload and analyze an image, you should see debug output like:
+   ```
+   DEBUG: Received image analysis request
+   DEBUG: Processing filename: 'cheeseburger.jpg'
+   DEBUG: Checking for burger: True
+   DEBUG: Matched burger -> Cheeseburger
+   ```
 
-### 2. Inaccurate Food Detection
+### 6. Manual Testing via API
 
-#### Symptoms:
-- Wrong food type detected
-- Calories seem unrealistic
-- Ingredients don't match the food
+**You can also test the API directly**:
 
-#### Solutions:
+1. Make sure both apps are running
+2. Use a tool like Postman or curl to send a POST request to:
+   `http://localhost:5001/api/analyze-image`
+   
+3. Include an image file in the request body
 
-**A. Improve Filename Descriptiveness**
-Use more specific filenames:
-- ✅ `grilled_chicken_burger.jpg`
-- ✅ `vegetable_supreme_pizza.png`
-- ✅ `spicy_tuna_sushi_roll.jpeg`
-- ❌ `img123.jpg`
-- ❌ `photo.png`
+## Expected Results
 
-**B. Supported Food Types**
-The system recognizes these food categories:
-- Burgers: `burger`, `cheese` in filename
-- French Fries: `fries`, `french fry` in filename
-- Noodles/Pasta: `noodle`, `pasta` in filename
-- Salads: `salad`, `lettuce` in filename
-- Pizza: `pizza`, `cheese` in filename
-- Sushi: `sushi`, `roll`, `rice` in filename
-- Sandwiches: `chicken`, `sandwich` in filename
-- Tacos: `taco` in filename
-- Ice Cream: `ice cream` in filename
-- Pasta: `pasta`, `carbonara` in filename
-- Salmon: `salmon` in filename
-- Stir Fry: `stir`, `fry` in filename
-- Yogurt: `yogurt`, `berries` in filename
+When you upload images with the recommended filenames, you should see:
 
-### 3. Debugging Steps
+| Filename | Expected Food Recognition | Calorie Range |
+|----------|---------------------------|---------------|
+| `*burger*.jpg` | Cheeseburger | 500-800 kcal |
+| `*pizza*.png` | Margherita Pizza | 600-900 kcal |
+| `*fries*.jpeg` | French Fries | 300-600 kcal |
+| `*sushi*.jpg` | Sushi Roll | 300-600 kcal |
+| `*sandwich*.png` | Chicken Sandwich | 400-700 kcal |
 
-#### Step 1: Check Python Console Output
-When you run `python app.py`, look for DEBUG messages:
-```
-DEBUG: Received image analysis request
-DEBUG: Session data: {'user_id': 1}
-DEBUG: Received file with filename: 'french_fries_lunch.jpg'
-DEBUG: Detected food: French Fries with 450 calories
-DEBUG: Returning result: {'food_name': 'French Fries', ...}
-```
-
-#### Step 2: Check Browser Network Tab
-1. Open Developer Tools (F12)
-2. Go to Network tab
-3. Upload an image
-4. Find the `analyze-image` request
-5. Check:
-   - Request URL: `http://localhost:5001/api/analyze-image`
-   - Request Method: POST
-   - Status Code: 200 (success) or error code
-   - Response content
-
-#### Step 3: Verify File Upload Directory
-Check that the uploads directory exists and is writable:
-```
-snapcalorie/
-├── uploads/        # Should exist and be writable
-├── data/           # Should exist and be writable
-├── app.py
-└── user.py
-```
-
-### 4. Testing Image Analysis
-
-#### Manual Test Script
-Run this command to verify the system works:
-```bash
-python test_enhanced_detection.py
-```
-
-#### Expected Output
-```
-Testing: french_fries_lunch.jpg
-  ✅ Correctly detected: French Fries
-
-Testing: vegetable_noodles_dinner.png
-  ✅ Correctly detected: Vegetable Noodles
-```
-
-### 5. Database Verification
-
-#### Check if Data is Being Saved
-Run the database check script:
-```bash
-python check_db.py
-```
-
-Expected output should show:
-```
-Food logs: [(1, 'French Fries', 450, ...), ...]
-```
-
-### 6. Common Error Messages and Fixes
-
-#### "User not authenticated" (401)
-- **Cause**: Not logged in or session expired
-- **Fix**: Login again at http://localhost:5000/login
-
-#### "No image provided" (400)
-- **Cause**: File not selected or upload failed
-- **Fix**: Select a valid image file
-
-#### "Invalid file type" (400)
-- **Cause**: Unsupported file extension
-- **Fix**: Use .jpg, .png, .gif, or .jpeg files
-
-#### "Failed to analyze image: Failed to fetch"
-- **Cause**: Food analysis server not running
-- **Fix**: Start `python app.py` on port 5001
-
-### 7. Best Practices for Accurate Results
-
-1. **Use descriptive filenames**:
-   - `french_fries_lunch.jpg`
-   - `vegetable_noodles_dinner.png`
-   - `ice_cream_dessert.jpeg`
-   - `beef_tacos_mexican.gif`
-
-2. **Keep images clear and well-lit**:
-   - Good lighting
-   - Food clearly visible
-   - Minimal background clutter
-
-3. **Upload appropriate file types**:
-   - JPEG for photos
-   - PNG for graphics
-   - Keep under 16MB
-
-4. **Check results immediately**:
-   - Verify food type matches your image
-   - Check calorie count seems reasonable
-   - Report any persistent issues
-
-### 8. Contact Support
-
-If issues persist after trying all solutions:
-1. Save screenshots of:
-   - The image you're trying to upload
-   - Browser console errors
-   - Network request/response details
-2. Include the DEBUG output from the Python terminal
-3. Describe the exact steps you took
+If you're still experiencing issues, please check the application logs for specific error messages.
