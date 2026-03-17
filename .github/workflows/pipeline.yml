@@ -12,22 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install root dependencies (if present)
+      - name: Install root dependencies (if package.json exists)
         run: |
           if [ -f package.json ]; then
             echo "Installing root dependencies"
             npm install
           else
-            echo "No root package.json found, skipping"
+            echo "No root package.json found"
           fi
 
       - name: Install client dependencies
@@ -36,14 +35,14 @@ jobs:
             cd client
             npm install
           else
-            echo "No client folder found"
+            echo "Client folder not found"
           fi
 
       - name: Build client
         run: |
           if [ -d client ]; then
             cd client
-            npm run build || echo "No build script found"
+            npm run build || echo "No build script"
           fi
 
   security:
@@ -53,11 +52,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run security audit
+      - name: Run Security Scan
         run: |
           if [ -f package.json ]; then
             npm install
             npm audit --audit-level=high || true
+          else
+            echo "No backend dependencies to scan"
           fi
 
   test:
@@ -83,7 +84,7 @@ jobs:
           if [ -f init-database.js ]; then
             node init-database.js
           else
-            echo "No database init script found"
+            echo "No DB script"
           fi
 
       - name: Run tests
