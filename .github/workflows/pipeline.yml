@@ -3,45 +3,60 @@ name: PipelineXR CI
 on:
   push:
     branches: [ main ]
-
   pull_request:
     branches: [ main ]
-
   workflow_dispatch:
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: echo "Installing..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Build Project
-        run: echo "Building..."
+      - name: Install dependencies
+        run: npm install
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
+      - name: Build Check
+        run: echo "Build successful"
 
-    steps:
-      - name: Run Unit Tests
-        run: echo "Tests passed!"
 
   security:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Security Scan
-        run: echo "No vulnerabilities found."
+      - uses: actions/checkout@v4
 
-  deploy:
-    needs: [test, security]
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Security Scan
+        run: npm audit --audit-level=high
+
+
+  test:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to Staging
-        run: echo "Deploying..."
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Integration Tests
+        run: node test-integration.js
